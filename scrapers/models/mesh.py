@@ -1,5 +1,5 @@
 from typing import Union
-from .site import Site
+from models.site import Site
 
 class Mesh(Site):
     """Class representing Mesh sites
