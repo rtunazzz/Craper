@@ -1,4 +1,5 @@
-from .models.snipes import Snipes
+from scrapers.models.snipes import Snipes
+from scrapers.db.db import DatabaseWrapper
 
 SITES = {
     'footpatrol': Snipes,
@@ -17,4 +18,6 @@ class Scraper:
             raise ValueError(f"Scaper for '{site_name}' is not supported.")
         
         self.name = site_name
+        
         self.site = SITES[site_name.lower()]
+        self.db = DatabaseWrapper(f"./data/{site_name}.db")
