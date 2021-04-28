@@ -1,0 +1,6 @@
+*.txt
+onygo.py
+snipes.py
+solebox.py
+scrapers/fast.py
+scrapers/orig.py
