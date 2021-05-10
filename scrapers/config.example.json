@@ -1,0 +1,14 @@
+{
+  "webhooks": {
+    "solebox": "https://discord.com/api/webhooks/DISCORD/WEBHOOK/FOR/SOLEBOX",
+    "snipes": "https://discord.com/api/webhooks/DISCORD/WEBHOOK/FOR/SNIPES",
+    "onygo": "https://discord.com/api/webhooks/DISCORD/WEBHOOK/FOR/ONYGO",
+    "rest": "https://discord.com/api/webhooks/DISCORD/WEBHOOK/FOR/ALL_THE_OTHERS"
+  },
+  "embed": {
+    "color": "#FFADA2",
+    "footer": {
+      "text": "@rtunazzz"
+    }
+  }
+}
