@@ -1,15 +1,17 @@
 #!/usr/bin/python3
 
-from typing import List
-from models import Footpatrol, Size, JDSports, TheHipStore,  Solebox, Snipes, Onygo, site
-from db.db import DatabaseWrapper
+from math import ceil
+from os import makedirs, path
 from pathlib import Path
-from os import path, makedirs
 from queue import Queue
 from threading import Lock, Thread, current_thread
-from requests import post, head
 from time import sleep
-from math import ceil
+from typing import List
+
+from requests import head, post
+
+from db.db import DatabaseWrapper
+from models import *
 
 SITES = {
     'footpatrol': Footpatrol,
