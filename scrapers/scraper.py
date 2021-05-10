@@ -39,6 +39,7 @@ def load_proxies(filename: str = 'proxies.txt', separator: str = '\n') -> list:
         with open(filename, "r") as f:
             file_contents = f.read()
             file_contents = file_contents.split(separator)
+
         formatted_proxy_list = []
         try:
             try:
@@ -140,10 +141,9 @@ class Scraper:
 
     def __del__(self) -> None:
         if len(self._failed_pids) > 0:
-            print(f"[{self.name.upper()}] Failed to check some pids. You can find a list in '{self.name}.txt'")
-            with open(f'{self.name}.txt', 'w') as f:
-                for pid in self._failed_pids:
-                    f.write(f'{self.site.format_pid(pid)}\n')
+            print(f"[{self.name.upper()}] Failed to check the follwing PIDs:")
+            for pid in self._failed_pids:
+                print(f'{self.site.format_pid(pid)}\n')
 
     def get_proxy(self):
         if len(self.proxies) > 1:
@@ -176,6 +176,9 @@ class Scraper:
         except exceptions.ProxyError:
             with self.print_lock:
                 print(f'[{self.name.upper()}] [{current_thread().name}] Proxy failed - failed to check pid {pid} ({self.site.format_pid(pid)})')
+        except exceptions.ConnectionError:
+            with self.print_lock:
+                print(f'[{self.name.upper()}] [{current_thread().name}] Failed to connect - failed to check pid {pid} ({self.site.format_pid(pid)})')
         
         self._failed_pids.append(pid)
         return False
