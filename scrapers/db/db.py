@@ -63,8 +63,9 @@ class DatabaseWrapper:
                         UNIQUE (productId)
                     ); '''
         self._cursor.execute(query)
+        self._connection.commit()
 
-    def add_data(self, site: str, pid: int, formatted_pid: str, image_url: str) -> None:
+    def add_data(self, site: str, pid: int, formatted_pid: str, image_url: str) -> bool:
         """Adds the data provided into a table, identified by the `site` parameter
 
         Args:
@@ -74,7 +75,7 @@ class DatabaseWrapper:
             image_url (str): Image URL
         
         Returns:
-            None
+            bool: True when added successfully, False otherwise
 
         Example:
         ```py3
@@ -85,7 +86,15 @@ class DatabaseWrapper:
             )
         ```
         """
-        self._cursor.execute(f"INSERT INTO {site} VALUES ({pid}, '{formatted_pid}', '{image_url}', {datetime.now().timestamp()});")
+        try:
+            self._cursor.execute(f"INSERT INTO {site} VALUES ({pid}, '{formatted_pid}', '{image_url}', {datetime.now().timestamp()});")
+            self._connection.commit()
+            return True
+            
+        except sqlite3.IntegrityError:
+            print(f'Failed to add {pid} ({formatted_pid}) - PID already exists in table "{site}".')
+        
+        return False
 
     def get_pids_int(self, site: str) -> List[int]:
         """Gets all product IDs (as integers) in a database table, specified by the `site` parameter 
@@ -103,7 +112,7 @@ class DatabaseWrapper:
         try:
             self._cursor.execute(f"SELECT productId FROM {site}")
         except sqlite3.OperationalError:
-            raise sqlite3.OperationalError(f"Table '{site}' does not exist. You can create it by the `create_table_safe` method.")
+            raise sqlite3.OperationalError(f"Table '{site}' does not exist. You can create it with the `create_table_safe` method.")
         rows: List[Tuple[int]] = self._cursor.fetchall()
         return [row[0] for row in rows]
 
@@ -150,10 +159,10 @@ class DatabaseWrapper:
 
 
 if __name__ == '__main__':
-    db = DatabaseWrapper('./test.db')
-    db.create_table_safe('snipes')
+    db = DatabaseWrapper('./data/pids.db')
+    db.create_table_safe('footpatrol')
 
-    DatabaseWrapper('./test.db').add_data('snipes', 13801929255, '00013801929255', 'https://www.snipes.com/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-snse-master-eu/default/dwc45fe2f6/1929255_P.jpg?sw=780&sh=780&sm=fit&sfrm=png')
-    print(db.get_pids_int('snipes'))
-    print(db.get_pids_formatted('snipes'))
+    # DatabaseWrapper('./test.db').add_data('snipes', 13801929255, '00013801929255', 'https://www.snipes.com/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-snse-master-eu/default/dwc45fe2f6/1929255_P.jpg?sw=780&sh=780&sm=fit&sfrm=png')
+    print(db.get_pids_int('footpatrol'))
+    # print(db.get_pids_formatted('snipes'))
     # print(db.get_all_data('snipes'))
