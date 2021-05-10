@@ -29,12 +29,15 @@ class Demandware(Site):
     @staticmethod
     def pid_stream(start: int = 1, stop: int = -1) -> Iterator[int]:
         curr_pid = start
+        # print(f'Starting stream from {start} to {stop}')
 
         # Checks if the PID provided is within the range provided in the method parameters
-        in_range : Callable[[int], bool] = lambda pid: (pid >= stop) if (stop != -1) else True
-        
+        in_range : Callable[[int], bool] = lambda pid: (pid <= stop) if (stop != -1) else True
+        # print(f'in_range is {in_range(curr_pid)}')
+
         # Checks if the number of digits in the PID provided is smaller or equal to the maximum provided
-        max_pid_reached : Callable[[int], bool] = lambda pid: (int(log10(pid)) + 1) <= Demandware.max_pid_digits
+        max_pid_reached : Callable[[int], bool] = lambda pid: (int(log10(pid)) + 1) > Demandware.max_pid_digits
+        # print(f'max_pid_reached is {max_pid_reached(curr_pid)}')
         
         while(in_range(curr_pid) and not max_pid_reached(curr_pid)):
             yield curr_pid
