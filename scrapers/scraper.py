@@ -140,8 +140,10 @@ class Scraper:
 
     def __del__(self) -> None:
         if len(self._failed_pids) > 0:
-            print(f'[{self.name.upper()}] Failed to check the following PIDs:')
-            print('\n'.join(map(lambda pid: str(pid), self._failed_pids)))
+            print(f"[{self.name.upper()}] Failed to check some pids. You can find a list in '{self.name}.txt'")
+            with open(f'{self.name}.txt', 'w') as f:
+                for pid in self._failed_pids:
+                    f.write(f'{self.site.format_pid(pid)}\n')
 
     def get_proxy(self):
         if len(self.proxies) > 1:
@@ -261,7 +263,7 @@ class Scraper:
             # in case we're starting a larger number of threads,
             # start the sender earlier (every 5 threads),
             # so we don't have to wait too long for all pids to send in the end
-            if len(self.running_threads) > 20 and len(self.running_threads % 5 == 0):
+            if len(self.running_threads) > 20 and len(self.running_threads) % 5 == 0:
                 self.send_all()
 
         # Keep checking for new pids in queue and sending them as soon as there are
@@ -291,7 +293,6 @@ if __name__ == '__main__':
 
     s = Scraper(
         'solebox',
-        '01901330'
-        # '01931377'
+        '01931377'
     )
-    s.scrape(100)
+    s.scrape(50)
