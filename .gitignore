@@ -4,3 +4,4 @@ snipes.py
 solebox.py
 scrapers/fast.py
 scrapers/orig.py
+config.json
