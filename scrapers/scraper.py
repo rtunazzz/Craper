@@ -164,15 +164,23 @@ class Scraper:
             r = head(url, proxies=self.get_proxy())
 
             if r.status_code == 200:
+                # 200 = loaded
+                # pid exists, save it
                 with self.print_lock:
                     print(f'[{self.name.upper()}] [{current_thread().name}] Found a new pid {pid} ({self.site.format_pid(pid)})')
-                # pid exists, save it
                 self.current_pids.append(pid)
                 self.send_queue.put(pid)
                 return True
+            elif r.status_code == 404:
+                # 404 = not loaded
+                pass
+            elif r.status_code == 403:
+                print(f'[{self.name.upper()}] [{current_thread().name}] Proxy banned!')
             elif r.status_code == 429:
                 with self.print_lock:
                     print(f'[{self.name.upper()}] [{current_thread().name}] Ratelimited!')
+            else:
+                print(f'[{self.name.upper()}] [{current_thread().name}] [{r.status_code}] Bad status code.')
         except exceptions.ProxyError:
             with self.print_lock:
                 print(f'[{self.name.upper()}] [{current_thread().name}] Proxy failed - failed to check pid {pid} ({self.site.format_pid(pid)})')
@@ -226,6 +234,13 @@ class Scraper:
         with self.print_lock:
             print(f'[{self.name.upper()}] [{current_thread().name}] Scraping a total of {len(pids)} pids')
         for pid in pids:
+            self.check_pid(pid)
+        
+        # check which pids were we checking in this method call and which failed
+        local_failed_pids = [pid for pid in self._failed_pids if pid in pids]
+        with self.print_lock:
+            print(f'[{self.name.upper()}] [{current_thread().name}] Retrying to check {len(local_failed_pids)} (failed) pids')
+        for pid in local_failed_pids:
             self.check_pid(pid)
 
     def scrape(self, num_threads: int, pids_per_thread: int = 100) -> None:
@@ -296,6 +311,8 @@ if __name__ == '__main__':
 
     s = Scraper(
         'solebox',
-        '01931377'
+        2008381,
+        # '01931638',
+        use_proxies=True # TODO isn't working properly
     )
     s.scrape(50)
