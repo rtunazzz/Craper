@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 
 from math import ceil
 from os import makedirs, path
@@ -12,8 +12,10 @@ from json import loads
 from requests import head, post, exceptions
 from random import choice as rand_choice
 
-from db.db import DatabaseWrapper
-from models import *
+from scrapers.db.db import DatabaseWrapper
+from scrapers.models import *
+
+from scrapers.utils import load_proxies, TermColors as c
 
 SITES = {
     'footpatrol': Footpatrol,
@@ -25,53 +27,24 @@ SITES = {
     'onygo': Onygo,
 }
 
-def load_proxies(filename: str = 'proxies.txt', separator: str = '\n') -> list:
-        """Reads proxies from a file and parses them to be ready to use with Python's `requests` library
-
-        Args:
-            filename (str, optional): Name of the file (.txt) where are the proxies located. Defaults to 'proxies.txt'.
-            separator (str, optional): Separator by which is each proxy separated. Defaults to '\\n'
-            
-        Returns:
-            formatted_proxy_list {list [dict]}: List of dictionaries, that are formatted and ready-to-use with Python
-        """
-
-        with open(filename, "r") as f:
-            file_contents = f.read()
-            file_contents = file_contents.split(separator)
-
-        formatted_proxy_list = []
-        try:
-            try:
-                # Userpass
-                for i in range(0, len(file_contents)):
-                    if ":" in file_contents[i]:
-                        tmp = file_contents[i]
-                        tmp = tmp.split(":")
-                        proxies = {
-                            "http": "http://" + tmp[2] + ":" + tmp[3] + "@" + tmp[0] + ":" + tmp[1] + "/",
-                            "https": "http://" + tmp[2] + ":" + tmp[3] + "@" + tmp[0] + ":" + tmp[1] + "/",
-                        }
-                        formatted_proxy_list.append(proxies)
-            except:
-                # IP auth
-                for n in range(0, len(file_contents)):
-                    if ":" in file_contents[n]:
-                        temp = file_contents[n]
-                        proxies = {"http": "http://" + temp, "https": "http://" + temp}
-                        formatted_proxy_list.append(proxies)
-        except:
-            return []
-        return formatted_proxy_list
-
-
 class Scraper:
-    def __init__(self, site_name: str, start_pid: Union[int, str] = 1, stop_pid: Union[int, str] = -1, use_proxies: bool = False) -> None:
+    def __init__(
+        self,
+        site_name: str,
+        start_pid: Union[int, str] = 1,
+        stop_pid: Union[int, str] = -1,
+        use_proxies: bool = False,
+        debug: bool = False,
+    ) -> None:
         self.running_threads: List[Thread] = []
-
+        self.debug = debug
+        
         self.db_lock = Lock()
         self.curr_lock = Lock()
         self.print_lock = Lock()
+        
+        self.cnt_lock = Lock()
+        self._pids_checked = 0
 
         self.send_queue = Queue()
 
@@ -85,6 +58,8 @@ class Scraper:
         config_path = f"{self._absolute_path}/config.json"
         if not path.exists(config_path):
             raise FileNotFoundError(f"File 'config.json' not found in: {self._absolute_path}")
+        
+        proxies_path = f'{self._absolute_path}/proxies.txt'
         
         # Make sure the site is supported
         supported_sites = map(lambda site: site.lower(), SITES.keys())
@@ -114,11 +89,11 @@ class Scraper:
             # check if there's a webhook for rest
             if "rest" in webhook_config:
                 self.webhook = webhook_config["rest"]
-                print(f"[{self.name.upper()}] Webhook for '{self.name}' not found - using the 'rest' webhook.")
+                print(c.red + f"🎛 [{self.name.upper()}] Webhook for '{self.name}' not found - using the 'rest' webhook." + c.reset)
             else:
                 raise ValueError(f"No webhook (nor a 'rest' webhook) specified for site {self.name}")
         else:
-            print(f"[{self.name.upper()}] Using the '{self.name}' webhook.")
+            print(f"🗣  [{self.name.upper()}] Using the '{self.name}' webhook.")
             self.webhook = webhook_config[self.name]
 
         self.embed_hex = int(self.config['embed']['color'].replace('#', ''), 16) if ('embed' in self.config and 'color' in self.config['embed']) else 0xFFADA2
@@ -127,7 +102,8 @@ class Scraper:
         self.useragents: List[str] = self.config['useragents'] if 'useragents' in self.config else ["github.com/rtunazzz/pid-scrapers"]
         
         # load in proxies if needed
-        self.proxies = load_proxies() if use_proxies else []
+        self.proxies = load_proxies(proxies_path) if use_proxies else []
+        print(f"🔗 [{self.name.upper()}] Using {len(self.proxies)} proxies.")
     
         # Initialize our database in the project's root/data folder
         self.db = DatabaseWrapper(f"{data_folder_path}/pids.db")
@@ -143,7 +119,7 @@ class Scraper:
 
     def __del__(self) -> None:
         if len(self._failed_pids) > 0:
-            print(f"[{self.name.upper()}] Failed to check the follwing PIDs:")
+            print(c.bold + f"[{self.name.upper()}] Failed to check the follwing PIDs:" + c.reset)
             for pid in self._failed_pids:
                 print(f'{self.site.format_pid(pid)}')
 
@@ -169,27 +145,33 @@ class Scraper:
                 # 200 = loaded
                 # pid exists, save it
                 with self.print_lock:
-                    print(f'[{self.name.upper()}] [{current_thread().name}] Found a new pid {pid} ({self.site.format_pid(pid)})')
+                    print(c.green + f'👀 [{self.name.upper()}] [{current_thread().name}] Found a new pid {pid} ({self.site.format_pid(pid)})' + c.reset)
                 self.current_pids.append(pid)
                 self.send_queue.put(pid)
+                with self.cnt_lock:
+                    self._pids_checked += 1
                 return True
             elif r.status_code == 404:
                 # 404 = not loaded
+                with self.cnt_lock:
+                    self._pids_checked += 1
                 return False
             elif r.status_code == 403:
-                print(f'[{self.name.upper()}] [{current_thread().name}] IP banned!')
+                print(c.orange + f'⛔️ [{self.name.upper()}] [{current_thread().name}] IP banned' + c.reset)
             elif r.status_code == 429:
                 with self.print_lock:
-                    print(f'[{self.name.upper()}] [{current_thread().name}] Ratelimited!')
+                    print(c.orange + f'🐌 [{self.name.upper()}] [{current_thread().name}] Ratelimited - Sleeping for 100sec' + c.reset)
+                    sleep(100)
             else:
-                print(f'[{self.name.upper()}] [{current_thread().name}] [{r.status_code}] Bad status code.')
+                print(f'🧐 [{self.name.upper()}] [{current_thread().name}] [{r.status_code}] Bad status code for pid {pid} ({self.site.format_pid(pid)})')
         except exceptions.ProxyError as e:
             with self.print_lock:
-                print(f'[{self.name.upper()}] [{current_thread().name}] Proxy failed - failed to check pid {pid} ({self.site.format_pid(pid)})')
-                print(e)
+                print(c.orange + f'🔗 [{self.name.upper()}] [{current_thread().name}] Proxy failed - failed to check pid {pid} ({self.site.format_pid(pid)})' + c.reset)
+                if self.debug:
+                    print(e)
         except exceptions.ConnectionError:
             with self.print_lock:
-                print(f'[{self.name.upper()}] [{current_thread().name}] Failed to connect - failed to check pid {pid} ({self.site.format_pid(pid)})')
+                print(c.orange + f'🔗 [{self.name.upper()}] [{current_thread().name}] Failed to connect - failed to check pid {pid} ({self.site.format_pid(pid)})' + c.reset)
         
         self._failed_pids.append(pid)
         return False
@@ -218,24 +200,24 @@ class Scraper:
             )
         except Exception as e:
             with self.print_lock:
-                print(f'[{self.name.upper()}] [ERROR] Failed to send {pid} ({self.site.format_pid(pid)}): {e}')
+                print(c.red + f'⛔️ [{self.name.upper()}] [ERROR] Failed to send {pid} ({self.site.format_pid(pid)}): {e}' + c.reset)
 
     def send_all(self):
         if not self.send_queue.empty():
-            print(f'[{self.name.upper()}] Adding new products into the database')
+            print(c.yellow + f'🪣  [{self.name.upper()}] Adding new products into the database' + c.reset)
 
         while(not self.send_queue.empty()):
             pid = self.send_queue.get()    
             self._send_pid(pid)
             sleep(1)
             with self.db_lock:
-                print(f'[{self.name.upper()}] Added {pid} ({self.site.format_pid(pid)}) into the database')
+                print(c.yellow + f'🔌 [{self.name.upper()}] Added {pid} ({self.site.format_pid(pid)}) into the database' + c.reset)
                 self.db.add_data(self.name, int(pid), self.site.format_pid(pid), self.site.image_url(pid))
             
 
     def _scrape(self, pids: List[int]) -> None:
         with self.print_lock:
-            print(f'[{self.name.upper()}] [{current_thread().name}] Scraping a total of {len(pids)} pids')
+            print(f'🌎 [{self.name.upper()}] [{current_thread().name}] Scraping a total of {c.bold}{len(pids)}{c.reset} pids')
         for pid in pids:
             self.check_pid(pid)
         
@@ -243,7 +225,7 @@ class Scraper:
         local_failed_pids = [pid for pid in self._failed_pids if pid in pids]
         if len(local_failed_pids) > 0:
             with self.print_lock:
-                print(f'[{self.name.upper()}] [{current_thread().name}] Retrying to check {len(local_failed_pids)} (failed) pids')
+                print(c.yellow + f'🔁 [{self.name.upper()}] [{current_thread().name}] Retrying to check {c.bold}{len(local_failed_pids)}{c.reset}{c.yellow} (failed) pids' + c.reset)
             for pid in local_failed_pids:
                 self.check_pid(pid)
 
@@ -266,14 +248,14 @@ class Scraper:
             
             if len(pids_todo) > 1:
                 t = Thread(
-                    name=f'{self.name}{i:02}',
+                    name=f'{i:03}',
                     target=self._scrape,
                     args=(pids_todo,)
                 )
                 self.running_threads.append(t)
                 i += 1
 
-        print(f'[{self.name.upper()}] Starting {len(self.running_threads)} workers (each checking {num_pids_each} products)')
+        print(c.yellow + f'🚧 [{self.name.upper()}] Starting {len(self.running_threads)} workers (each checking {num_pids_each} products)' + c.reset)
         
         # start all threads
         for t in self.running_threads:
@@ -296,27 +278,10 @@ class Scraper:
 
         # wait for all threads to end
         map(lambda t: t.join(), self.running_threads)
-        print(f'[{self.name.upper()}] All workers finished')
-        
-        print(f'[{self.name.upper()}] Saving the rest of the PIDs, please wait')
+        print(c.yellow + f'🚧 [{self.name.upper()}] All workers finished' + c.reset)
+
+        print(c.yellow + f'💾 [{self.name.upper()}] Saving the rest of the PIDs, please wait' + c.reset)
         self.send_all()
-        print(f'[{self.name.upper()}] Scraping done')
+        print('-------------------------------------------------------------')
+        print(c.green + f'✅ [{self.name.upper()}] {c.bold}Scraping done!{c.reset}{c.green} Successfully checked {c.bold}{self._pids_checked}{c.reset}{c.green} pids.' + c.reset)
 
-
-if __name__ == '__main__':
-    # for i in range(5):
-    #     print('********************************************************')
-    #     s = Scraper(
-    #         'solebox',
-    #         # 1931630
-    #         1805000 + (5000 * i)
-    #     )
-    #     s.scrape(1)
-
-    s = Scraper(
-        'solebox',
-        # 2009381,
-        1957134,
-        use_proxies=True,
-    )
-    s.scrape(100)
