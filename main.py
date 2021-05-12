@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 from scrapers import Scraper
 from sys import exit
 
-parser = ArgumentParser(description='Sneaker scraper launcher')
+parser = ArgumentParser(description='cScraper - new product scraper')
 
 parser.add_argument('site', metavar='<SITE_NAME>', type=str, help='Name of the site to scrape')
 
