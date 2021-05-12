@@ -16,12 +16,15 @@ python3 main.py solebox -pt 1 -s 01925412
 # Starts one scraper for Solebox product IDs
 # with proxies, from pid 01925412
 ```
+![Example of the running command.](./cdn/example.png)
 
 ### Installation
 After cloning this repository, run:
 ```sh
 python3 -m pip install -r requirements.txt
 ```
+
+### Configuration
 
 ## Todo
 - [x] Finish readme
