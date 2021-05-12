@@ -143,7 +143,7 @@ class Scraper:
         if len(self._failed_pids) > 0:
             print(f"[{self.name.upper()}] Failed to check the follwing PIDs:")
             for pid in self._failed_pids:
-                print(f'{self.site.format_pid(pid)}\n')
+                print(f'{self.site.format_pid(pid)}')
 
     def get_proxy(self):
         if len(self.proxies) > 1:
@@ -173,7 +173,7 @@ class Scraper:
                 return True
             elif r.status_code == 404:
                 # 404 = not loaded
-                pass
+                return False
             elif r.status_code == 403:
                 print(f'[{self.name.upper()}] [{current_thread().name}] Proxy banned!')
             elif r.status_code == 429:
@@ -181,9 +181,10 @@ class Scraper:
                     print(f'[{self.name.upper()}] [{current_thread().name}] Ratelimited!')
             else:
                 print(f'[{self.name.upper()}] [{current_thread().name}] [{r.status_code}] Bad status code.')
-        except exceptions.ProxyError:
+        except exceptions.ProxyError as e:
             with self.print_lock:
                 print(f'[{self.name.upper()}] [{current_thread().name}] Proxy failed - failed to check pid {pid} ({self.site.format_pid(pid)})')
+                print(e)
         except exceptions.ConnectionError:
             with self.print_lock:
                 print(f'[{self.name.upper()}] [{current_thread().name}] Failed to connect - failed to check pid {pid} ({self.site.format_pid(pid)})')
@@ -238,10 +239,11 @@ class Scraper:
         
         # check which pids were we checking in this method call and which failed
         local_failed_pids = [pid for pid in self._failed_pids if pid in pids]
-        with self.print_lock:
-            print(f'[{self.name.upper()}] [{current_thread().name}] Retrying to check {len(local_failed_pids)} (failed) pids')
-        for pid in local_failed_pids:
-            self.check_pid(pid)
+        if len(local_failed_pids) > 0:
+            with self.print_lock:
+                print(f'[{self.name.upper()}] [{current_thread().name}] Retrying to check {len(local_failed_pids)} (failed) pids')
+            for pid in local_failed_pids:
+                self.check_pid(pid)
 
     def scrape(self, num_threads: int, pids_per_thread: int = 100) -> None:
         num_pids_each = pids_per_thread
@@ -311,8 +313,8 @@ if __name__ == '__main__':
 
     s = Scraper(
         'solebox',
-        2008381,
-        # '01931638',
-        use_proxies=True # TODO isn't working properly
+        # 2009381,
+        1944638,
+        use_proxies=True
     )
     s.scrape(50)
