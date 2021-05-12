@@ -124,6 +124,8 @@ class Scraper:
         self.embed_hex = int(self.config['embed']['color'].replace('#', ''), 16) if ('embed' in self.config and 'color' in self.config['embed']) else 0xFFADA2
         self.footer_text = self.config['embed']['footer']['text'] if ('embed' in self.config and 'footer' in self.config['embed'] and 'text' in self.config['embed']['footer']) else "@rtunazzz"
         
+        self.useragents: List[str] = self.config['useragents'] if 'useragents' in self.config else ["github.com/rtunazzz/pid-scrapers"]
+        
         # load in proxies if needed
         self.proxies = load_proxies() if use_proxies else []
     
@@ -161,7 +163,7 @@ class Scraper:
 
         try:
             # send a head request to check if the resource exists
-            r = head(url, proxies=self.get_proxy())
+            r = head(url, proxies=self.get_proxy(), headers={"User-Agent": rand_choice(self.useragents)})
 
             if r.status_code == 200:
                 # 200 = loaded
@@ -175,7 +177,7 @@ class Scraper:
                 # 404 = not loaded
                 return False
             elif r.status_code == 403:
-                print(f'[{self.name.upper()}] [{current_thread().name}] Proxy banned!')
+                print(f'[{self.name.upper()}] [{current_thread().name}] IP banned!')
             elif r.status_code == 429:
                 with self.print_lock:
                     print(f'[{self.name.upper()}] [{current_thread().name}] Ratelimited!')
@@ -278,7 +280,7 @@ class Scraper:
             t.start()
 
             # sleep for a small amount just to slow down the spam a little
-            sleep(len(self.running_threads) // 10)
+            sleep(1)
             
             # in case we're starting a larger number of threads,
             # start the sender earlier (every 5 threads),
@@ -314,7 +316,7 @@ if __name__ == '__main__':
     s = Scraper(
         'solebox',
         # 2009381,
-        1944638,
-        use_proxies=True
+        1957134,
+        use_proxies=True,
     )
-    s.scrape(50)
+    s.scrape(100)
