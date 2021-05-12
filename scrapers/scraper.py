@@ -35,9 +35,11 @@ class Scraper:
         stop_pid: Union[int, str] = -1,
         use_proxies: bool = False,
         debug: bool = False,
+        delay: int = 1,
     ) -> None:
         self.running_threads: List[Thread] = []
         self.debug = debug
+        self.delay = delay
         
         self.db_lock = Lock()
         self.curr_lock = Lock()
@@ -118,6 +120,8 @@ class Scraper:
         self.pid_generator = self.site.pid_stream(self.start_pid, self.stop_pid)
 
     def __del__(self) -> None:
+        if not self.debug: return
+
         if len(self._failed_pids) > 0:
             print(c.bold + f"[{self.name.upper()}] Failed to check the follwing PIDs:" + c.reset)
             for pid in self._failed_pids:
@@ -161,7 +165,7 @@ class Scraper:
             elif r.status_code == 429:
                 with self.print_lock:
                     print(c.orange + f'🐌 [{self.name.upper()}] [{current_thread().name}] Ratelimited - Sleeping for 100sec' + c.reset)
-                    sleep(100)
+                    sleep(self.delay * 100)
             else:
                 print(f'🧐 [{self.name.upper()}] [{current_thread().name}] [{r.status_code}] Bad status code for pid {pid} ({self.site.format_pid(pid)})')
         except exceptions.ProxyError as e:
@@ -209,7 +213,7 @@ class Scraper:
         while(not self.send_queue.empty()):
             pid = self.send_queue.get()    
             self._send_pid(pid)
-            sleep(1)
+            sleep(self.delay)
             with self.db_lock:
                 print(c.yellow + f'🔌 [{self.name.upper()}] Added {pid} ({self.site.format_pid(pid)}) into the database' + c.reset)
                 self.db.add_data(self.name, int(pid), self.site.format_pid(pid), self.site.image_url(pid))
@@ -262,7 +266,7 @@ class Scraper:
             t.start()
 
             # sleep for a small amount just to slow down the spam a little
-            sleep(1)
+            sleep(self.delay)
             
             # in case we're starting a larger number of threads,
             # start the sender earlier (every 5 threads),
