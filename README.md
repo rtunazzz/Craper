@@ -6,8 +6,8 @@ A collection of new PID scrapers for various websites.
 ## Installing
 
 ## Todo
-- [ ] Finish readme
-- [ ] Support commandline arguments
+- [x] Finish readme
+- [x] Add terminal colors
+- [x] Support commandline arguments
 - [ ] Tests
 - [ ] ? Script for adding additional sites
-- [ ] ? Handle issues with bad proxies
