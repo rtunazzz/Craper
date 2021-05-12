@@ -1,9 +1,27 @@
 # New PID Scrapers
 A collection of new PID scrapers for various websites.
 
-## Usage
+### Usage
+```sh
+python3 main.py -h
+# Shows the usage info
 
-## Installing
+python3 main.py footpatrol
+# Starts a Footpatrol scraper
+
+python3 main.py footpatrol -t10 -n100
+# Starts 10 Footpatrol scrapers, each scraping 100 product IDs
+
+python3 main.py solebox -pt 1 -s 01925412
+# Starts one scraper for Solebox product IDs
+# with proxies, from pid 01925412
+```
+
+### Installation
+After cloning this repository, run:
+```sh
+python3 -m pip install -r requirements.txt
+```
 
 ## Todo
 - [x] Finish readme
