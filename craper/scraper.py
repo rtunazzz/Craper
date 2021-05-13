@@ -37,9 +37,9 @@ class Scraper:
         debug: bool = False,
         delay: int = 1,
     ) -> None:
-        print(c.bold + f"ℹ️ [{site_name.upper()}] Initializing a scraper" + c.reset)
-        print(c.yellow + f"ℹ️ [{site_name.upper()}] Starting from PID {start_pid} and ending {'never' if int(stop_pid) == -1 else f'at {stop_pid}'}" + c.reset)
-        print(c.yellow + f"ℹ️ [{site_name.upper()}] {'Using proxies' if use_proxies else 'Not using proxies'} on a {delay}s delay." + c.reset)
+        print(c.bold + f"ℹ️  [{site_name.upper()}] Initializing a scraper" + c.reset)
+        print(c.yellow + f"ℹ️  [{site_name.upper()}] Starting from PID {start_pid} and ending {'never' if int(stop_pid) == -1 else f'at {stop_pid}'}" + c.reset)
+        print(c.yellow + f"ℹ️  [{site_name.upper()}] {'Using proxies' if use_proxies else 'Not using proxies'} on a {delay}s delay." + c.reset)
 
         self.running_threads: List[Thread] = []
         self.debug = debug
@@ -94,13 +94,16 @@ class Scraper:
         if self.name not in webhook_config:
             # check if there's a webhook for rest
             if "rest" in webhook_config:
-                self.webhook = webhook_config["rest"]
+                self.webhook: str = webhook_config["rest"]
                 print(c.red + f"🎛  [{self.name.upper()}] Webhook for '{self.name}' not found - using the 'rest' webhook." + c.reset)
             else:
                 raise ValueError(f"No webhook (nor a 'rest' webhook) specified for site {self.name}")
         else:
             print(f"🗣  [{self.name.upper()}] Using the '{self.name}' webhook.")
-            self.webhook = webhook_config[self.name]
+            self.webhook: str = webhook_config[self.name]
+
+        if self.webhook.strip() == '':
+            raise ValueError(f"Webhook is empty!")
 
         self.embed_hex = int(self.config['embed']['color'].replace('#', ''), 16) if ('embed' in self.config and 'color' in self.config['embed']) else 0xFFADA2
         self.footer_text = self.config['embed']['footer']['text'] if ('embed' in self.config and 'footer' in self.config['embed'] and 'text' in self.config['embed']['footer']) else "@rtunazzz"
