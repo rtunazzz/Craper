@@ -3,17 +3,17 @@
 # Craper
 A collection of product scrapers for various websites.
 
-### Supported sites
+# Supported sites
 > Support for more websites yet to come.
  - Footpatrol
  - Size
- - JDSports EU
+ - JDSports (EU)
  - TheHipStore
  - Solebox
  - Snipes
  - Onygo
 
-### Configuration
+# Configuration
 1. Clone this repository
 ```bash
 $   git clone https://github.com/rtunazzz/Craper
@@ -26,9 +26,11 @@ $   ./bin/config.sh
 4. (*Optional*) Add proxies to the `craper/config/proxies.txt` file
 > If you're struggling with setting up these configuration files, I recommend checking out [these](./craper/config/examples.md) examples!
 
-### Installation
+# Installation
+There is two ways you can install this. Either as a global command, which will be always available from your terminal or just as a Python script.
 > Make sure to have everything [configured](###Configuration) before installing.
 
+#### As a command
 ```bash
 $   python3 setup.py install
 ```
@@ -51,4 +53,8 @@ $   craper solebox -pt 1 -s 01925412
 #### Python script
 You may also run the scraper as a Python script. If you would rather not install the package, you can just clone this repo and run `python3 -m craper`.
 
-![Example of the running command.](https://i.imgur.com/dI4g1Vq.png)
+# Example
+```bash
+$   craper size -t10 -n5 -s 10
+```
+![Example of the running command.](https://i.imgur.com/jA374SD.png)
