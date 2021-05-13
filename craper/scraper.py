@@ -37,6 +37,10 @@ class Scraper:
         debug: bool = False,
         delay: int = 1,
     ) -> None:
+        print(c.bold + f"ℹ️ [{site_name.upper()}] Initializing a scraper" + c.reset)
+        print(c.yellow + f"ℹ️ [{site_name.upper()}] Starting from PID {start_pid} and ending {'never' if int(stop_pid) == -1 else f'at {stop_pid}'}" + c.reset)
+        print(c.yellow + f"ℹ️ [{site_name.upper()}] {'Using proxies' if use_proxies else 'Not using proxies'} on a {delay}s delay." + c.reset)
+
         self.running_threads: List[Thread] = []
         self.debug = debug
         self.delay = delay
@@ -91,7 +95,7 @@ class Scraper:
             # check if there's a webhook for rest
             if "rest" in webhook_config:
                 self.webhook = webhook_config["rest"]
-                print(c.red + f"🎛 [{self.name.upper()}] Webhook for '{self.name}' not found - using the 'rest' webhook." + c.reset)
+                print(c.red + f"🎛  [{self.name.upper()}] Webhook for '{self.name}' not found - using the 'rest' webhook." + c.reset)
             else:
                 raise ValueError(f"No webhook (nor a 'rest' webhook) specified for site {self.name}")
         else:
