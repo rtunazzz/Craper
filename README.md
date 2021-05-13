@@ -1,9 +1,10 @@
-<p align="center"><img width=80% src="./cdn/sCraper.png"></p>
+<p align="center"><img width=80% src="https://i.imgur.com/zGXvGvf.png"></p>
 
-# sCraper
+# Craper
 A collection of product scrapers for various websites.
 
 ### Supported sites
+> Support for more websites yet to come.
  - Footpatrol
  - Size
  - JDSports EU
@@ -11,7 +12,6 @@ A collection of product scrapers for various websites.
  - Solebox
  - Snipes
  - Onygo
-> Support for more websites yet to come.
 
 
 ### Usage
@@ -19,7 +19,7 @@ A collection of product scrapers for various websites.
 #### Command
 > Make sure to [install](#Installation) and [configure](#Configuration) the command before running.
 
-```sh
+```bash
 # Show the usage info
 craper -h
 
@@ -34,22 +34,14 @@ craper solebox -pt 1 -s 01925412
 ```
 
 #### Python script
-You may also run the scraper as a Python script. Syntax is exactly the same as for the `craper` command, you just replace `craper` with `python3 main.py`.
+You may also run the scraper as a Python script. If you would rather not install the package, you can just clone this repo and run `python3 -m craper`.
 
-![Example of the running command.](./cdn/example.png)
+![Example of the running command.](https://i.imgur.com/dI4g1Vq.png)
 
 ### Installation
 After cloning this repository, run:
-```sh
+```bash
 python3 -m pip install -r requirements.txt
 ```
 
 ### Configuration
-
-
-## Todo
-- [x] Finish readme
-- [x] Add terminal colors
-- [x] Support commandline arguments
-- [ ] Tests
-- [ ] ? Script for adding additional sites
