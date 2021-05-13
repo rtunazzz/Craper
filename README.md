@@ -1,7 +1,10 @@
 <p align="center"><img width=80% src="https://i.imgur.com/zGXvGvf.png"></p>
 
 # Craper
-A collection of product scrapers for various websites.
+> A collection of product scrapers for various websites.
+
+Scrapes new products, sends them through a Discord webhook and saves them into a database.
+
 
 # Supported sites
 > Support for more websites yet to come.
@@ -13,7 +16,9 @@ A collection of product scrapers for various websites.
  - Snipes
  - Onygo
 
-# Configuration
+<br></br>
+
+## Setup
 1. Clone this repository
 ```bash
 $   git clone https://github.com/rtunazzz/Craper
@@ -26,9 +31,14 @@ $   ./bin/config.sh
 4. (*Optional*) Add proxies to the `craper/config/proxies.txt` file
 > If you're struggling with setting up these configuration files, I recommend checking out [these](./craper/config/examples.md) examples!
 
-# Installation
+### Note
+Proxy usage is not required but recommended for websites that ban often, such as Solebox, Snipes or Onygo.
+
+<br></br>
+
+## Installation
 There is two ways you can install this. Either as a global command, which will be always available from your terminal or just as a Python script.
-> Make sure to have everything [configured](###Configuration) before installing.
+> Make sure to have everything [set up](###Setup) properly before installing.
 
 #### As a command
 ```bash
@@ -53,8 +63,18 @@ $   craper solebox -pt 1 -s 01925412
 #### Python script
 You may also run the scraper as a Python script. If you would rather not install the package, you can just clone this repo and run `python3 -m craper`.
 
-# Example
+<br></br>
+
+## Example
 ```bash
 $   craper size -t10 -n5 -s 10
 ```
 ![Example of the running command.](https://i.imgur.com/jA374SD.png)
+
+## FAQ
+#### I am getting an error saying something like `file not found`/ `file doesn't exist`
+You likely either didn't clone this repository or didn't change the active directory of your terminal to this repo. Check out [this](https://projectdestroyer.com/2018/01/run-scripts-github/) article from Project Destroyer and follow the steps mentioned.
+
+
+------
+Made by [__rtuna__](https://twitter.com/rtunazzz).
