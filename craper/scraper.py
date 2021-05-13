@@ -12,10 +12,10 @@ from json import loads
 from requests import head, post, exceptions
 from random import choice as rand_choice
 
-from scrapers.db.db import DatabaseWrapper
-from scrapers.models import *
+from craper.db.db import DatabaseWrapper
+from craper.models import *
 
-from scrapers.utils import load_proxies, TermColors as c
+from craper.utils import load_proxies, TermColors as c
 
 SITES = {
     'footpatrol': Footpatrol,
@@ -79,9 +79,9 @@ class Scraper:
         self.site = SITES[site_name.lower()]()
 
         # Load in config
-        config_f = open(config_path).read()
-        self.config = loads(config_f)
-        
+        with open(config_path) as config_f:
+            self.config = loads(config_f.read())
+
         if 'webhooks' not in self.config:
             raise ValueError(f"No 'webhooks' attribute found in the config.json file.")
 

@@ -1,5 +1,5 @@
 from typing import Callable, Iterator, Union
-from scrapers.models.site import Site
+from craper.models.site import Site
 from math import log10
 
 class Demandware(Site):
