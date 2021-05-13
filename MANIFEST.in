@@ -1,0 +1,2 @@
+recursive-include craper/config *
+recursive-include craper/data *
