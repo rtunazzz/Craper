@@ -57,11 +57,11 @@ class Scraper:
         if not path.exists(data_folder_path):
             makedirs(data_folder_path)
         
-        config_path = f"{self._absolute_path}/config.json"
+        config_path = f"{self._absolute_path}/config/config.json"
         if not path.exists(config_path):
-            raise FileNotFoundError(f"File 'config.json' not found in: {self._absolute_path}")
+            raise FileNotFoundError(f"File 'config.json' not found in: {self._absolute_path}/config")
         
-        proxies_path = f'{self._absolute_path}/proxies.txt'
+        proxies_path = f'{self._absolute_path}/config/proxies.txt'
         
         # Make sure the site is supported
         supported_sites = map(lambda site: site.lower(), SITES.keys())
