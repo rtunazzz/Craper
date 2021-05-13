@@ -24,7 +24,7 @@ $   ./bin/config.sh
 ```
 3. Add your webhooks, footer & color preferences into the `craper/config/config.json` file.
 4. (*Optional*) Add proxies to the `craper/config/proxies.txt` file
-
+> If you're struggling with setting up these configuration files, I recommend checking out [these](./craper/config/examples.md) examples!
 
 ### Installation
 > Make sure to have everything [configured](###Configuration) before installing.
