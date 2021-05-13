@@ -37,7 +37,7 @@ class Mesh(Site):
     
     @staticmethod
     def format_pid(pid: Union[str, int]) -> str:
-        return f'{int(pid):06}_footpatrolcom'
+        return f'{int(pid):06}'
     
     @staticmethod
     def pid_stream(start: int = 1, stop: int = -1) -> Iterator[int]:
@@ -78,6 +78,10 @@ class Footpatrol(Mesh):
         ValueError
             When required method(s) / attributes are not implemented
     """
+
+    @staticmethod
+    def format_pid(pid: Union[str, int]) -> str:
+        return f'{int(pid):06}_footpatrolcom'
 
     @staticmethod
     def image_url(pid: Union[str, int]) -> str:
