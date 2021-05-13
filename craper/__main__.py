@@ -18,22 +18,26 @@ parser.add_argument('--debug', action='store_true', help='Turns on debugging mod
 
 args = parser.parse_args()
 
-try:
-    s = Scraper(
-        site_name=args.site,
-        start_pid=args.start,   
-        stop_pid=args.end,
-        use_proxies=args.proxies,
-        debug=args.debug,
-        delay=args.delay,
-    )
-
-    if args.perthread is not None:
-        s.scrape(
-            num_threads=args.nthreads,
-            pids_per_thread=args.perthread,
+def main():
+    try:
+        s = Scraper(
+            site_name=args.site,
+            start_pid=args.start,   
+            stop_pid=args.end,
+            use_proxies=args.proxies,
+            debug=args.debug,
+            delay=args.delay,
         )
-    else:
-        s.scrape(num_threads=args.nthreads)
-except KeyboardInterrupt:
-    exit(1)
+
+        if args.perthread is not None:
+            s.scrape(
+                num_threads=args.nthreads,
+                pids_per_thread=args.perthread,
+            )
+        else:
+            s.scrape(num_threads=args.nthreads)
+    except KeyboardInterrupt:
+        exit(1)
+
+if __name__ == '__main__':
+    main()
