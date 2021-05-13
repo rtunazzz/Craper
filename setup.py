@@ -32,7 +32,7 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     # packages=["craper"],
-    packages=find_packages(exclude=("tests",)),
+    packages=find_packages(exclude=("tests",)) + ['craper/config', 'craper/data'],
     include_package_data=True,
     install_requires=reqs,
     entry_points={
