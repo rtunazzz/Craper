@@ -6,6 +6,8 @@
 ## What does this do?
 This script can scrape product images from various websites (listed below) by their product IDs. Those product IDs then can be used to get early links/ early PIDs for each website.
 
+When the command is ran, it looks for new products, saves any new ones into a database and sends you a Discord webhook for each new product found.
+
 <br></br>
 
 # Supported sites
