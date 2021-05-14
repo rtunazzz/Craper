@@ -5,6 +5,8 @@
 
 Scrapes new products, sends them through a Discord webhook and saves them into a database.
 
+<br></br>
+
 # Supported sites
 > Support for more websites yet to come.
 
