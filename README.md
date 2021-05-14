@@ -21,11 +21,11 @@ Scrapes new products, sends them through a Discord webhook and saves them into a
 ## Setup
 1. Clone this repository
 ```bash
-$   git clone https://github.com/rtunazzz/Craper
+git clone https://github.com/rtunazzz/Craper
 ```
 2. Create required files
 ```bash
-$   ./bin/config.sh
+./bin/config.sh
 ```
 3. Add your webhooks, footer & color preferences into the `craper/config/config.json` file.
 4. (*Optional*) Add proxies to the `craper/config/proxies.txt` file
@@ -42,22 +42,22 @@ There is two ways you can install this. Either as a global command, which will b
 
 #### As a command
 ```bash
-$   python3 setup.py install
+python3 setup.py install
 ```
 
 Then you can go ahead and start using the command:
 ```bash
-    # Show the usage info
-$   craper -h
+# Show the usage info
+craper -h
 
-    # Start a Footpatrol scraper
-$   craper footpatrol
+# Start a Footpatrol scraper
+craper footpatrol
 
-    # Start 10 Footpatrol scrapers, each scraping 100 product IDs
-$   craper footpatrol -t10 -n100
+# Start 10 Footpatrol scrapers, each scraping 100 product IDs
+craper footpatrol -t10 -n100
 
-    # Start one scraper with proxies, starting from pid 01925412
-$   craper solebox -pt 1 -s 01925412
+# Start one scraper with proxies, starting from pid 01925412
+craper solebox -pt 1 -s 01925412
 ```
 
 #### Python script
@@ -67,7 +67,7 @@ You may also run the scraper as a Python script. If you would rather not install
 
 ## Example
 ```bash
-$   craper size -t10 -n5 -s 10
+craper size -t10 -n5 -s 10
 ```
 ![Example of the running command.](https://i.imgur.com/jA374SD.png)
 
