@@ -15,6 +15,7 @@ class Mesh(Site):
             Hostname of the website
 
     Static Methods:
+        parse_pid(pid)
         format_pid(pid)
         pid_stream(start, stop)
     
@@ -35,6 +36,10 @@ class Mesh(Site):
     # def host() -> str:
     #     return 'i1.adis.ws'
     
+    @staticmethod
+    def parse_pid(pid: Union[str, int]) -> int:
+        return int(pid)
+
     @staticmethod
     def format_pid(pid: Union[str, int]) -> str:
         return f'{int(pid):06}'
@@ -69,6 +74,7 @@ class Footpatrol(Mesh):
             Hostname of the website
 
     Static Methods:
+        parse_pid(pid)
         image_url(pid)
         image_uri(pid)
         format_pid(pid)
@@ -80,16 +86,20 @@ class Footpatrol(Mesh):
     """
 
     @staticmethod
+    def parse_pid(pid: Union[str, int]) -> int:
+        return int(str(pid).replace('_footpatrolcom', ''))
+
+    @staticmethod
     def format_pid(pid: Union[str, int]) -> str:
-        return f'{int(pid):06}_footpatrolcom'
+        return f'{Footpatrol.parse_pid(pid):06}_footpatrolcom'
 
     @staticmethod
     def image_url(pid: Union[str, int]) -> str:
-        return f'http://i1.adis.ws/i/jpl/fp_{int(pid):06}_a'
+        return f'http://i1.adis.ws/i/jpl/fp_{Footpatrol.parse_pid(pid):06}_a'
     
     @staticmethod
     def image_uri(pid: Union[str, int]) -> str:
-        return f'/i/jpl/fp_{int(pid):06}_a'
+        return f'/i/jpl/fp_{Footpatrol.parse_pid(pid):06}_a'
 
 class Size(Mesh):
     """Class representing size.co.uk
@@ -104,6 +114,7 @@ class Size(Mesh):
             Hostname of the website
 
     Static Methods:
+        parse_pid(pid)
         image_url(pid)
         image_uri(pid)
         format_pid(pid)
@@ -116,11 +127,11 @@ class Size(Mesh):
 
     @staticmethod
     def image_url(pid: Union[str, int]) -> str:
-        return f'http://i1.adis.ws/i/jpl/sz_{int(pid):06}_a'
+        return f'http://i1.adis.ws/i/jpl/sz_{Size.parse_pid(pid):06}_a'
     
     @staticmethod
     def image_uri(pid: Union[str, int]) -> str:
-        return f'/i/jpl/sz_{int(pid):06}_a'
+        return f'/i/jpl/sz_{Size.parse_pid(pid):06}_a'
 
 class JDSports(Mesh):
     """Class representing jdsports.co.uk
@@ -135,6 +146,7 @@ class JDSports(Mesh):
             Hostname of the website
 
     Static Methods:
+        parse_pid(pid)
         image_url(pid)
         image_uri(pid)
         format_pid(pid)
@@ -147,11 +159,11 @@ class JDSports(Mesh):
 
     @staticmethod
     def image_url(pid: Union[str, int]) -> str:
-        return f'http://i1.adis.ws/i/jpl/jd_{int(pid):06}_a'
+        return f'http://i1.adis.ws/i/jpl/jd_{JDSports.parse_pid(pid):06}_a'
     
     @staticmethod
     def image_uri(pid: Union[str, int]) -> str:
-        return f'/i/jpl/jd_{int(pid):06}_a'
+        return f'/i/jpl/jd_{JDSports.parse_pid(pid):06}_a'
 
 class TheHipStore(Mesh):
     """Class representing thehipstore.co.uk
@@ -166,6 +178,7 @@ class TheHipStore(Mesh):
             Hostname of the website
 
     Static Methods:
+        parse_pid(pid)
         image_url(pid)
         image_uri(pid)
         format_pid(pid)
@@ -178,8 +191,8 @@ class TheHipStore(Mesh):
     
     @staticmethod
     def image_url(pid: Union[str, int]) -> str:
-        return f'http://i1.adis.ws/i/jpl/hp_{int(pid):06}_a'
+        return f'http://i1.adis.ws/i/jpl/hp_{TheHipStore.parse_pid(pid):06}_a'
     
     @staticmethod
     def image_uri(pid: Union[str, int]) -> str:
-        return f'/i/jpl/hp_{int(pid):06}_a'
+        return f'/i/jpl/hp_{TheHipStore.parse_pid(pid):06}_a'

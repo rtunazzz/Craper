@@ -13,6 +13,7 @@ class Demandware(Site):
             Maximum number of digits a product ID can have
 
     Static Methods:
+        parse_pid(pid)
         pid_stream(start, stop)
     
     Raises:
@@ -25,6 +26,10 @@ class Demandware(Site):
     # @staticmethod
     # def max_pid_digits() -> int:
     #     return 7
+
+    @staticmethod
+    def parse_pid(pid: Union[str, int]) -> int:
+        return int(pid)
     
     @staticmethod
     def pid_stream(start: int = 1, stop: int = -1) -> Iterator[int]:
@@ -56,6 +61,7 @@ class Solebox(Demandware):
             Hostname of the website
 
     Static Methods:
+        parse_pid(pid)
         image_url(pid)
         image_uri(pid)
         format_pid(pid)
@@ -73,16 +79,20 @@ class Solebox(Demandware):
     #     return 'www.solebox.com'
 
     @staticmethod
+    def parse_pid(pid: Union[str, int]) -> int:
+        return int(pid)
+
+    @staticmethod
     def image_url(pid: Union[str, int]) -> str:
-        return f'https://www.solebox.com/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-solebox-master-de/default/dw1220ea0d/{int(pid)}_PS.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
+        return f'https://www.solebox.com/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-solebox-master-de/default/dw1220ea0d/{Solebox.parse_pid(pid)}_PS.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
     
     @staticmethod
     def image_uri(pid: Union[str, int]) -> str:
-        return f'/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-solebox-master-de/default/dw1220ea0d/{int(pid)}_PS.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
+        return f'/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-solebox-master-de/default/dw1220ea0d/{Solebox.parse_pid(pid)}_PS.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
     
     @staticmethod
     def format_pid(pid: Union[str, int]) -> str:
-        return f'0{int(pid):07}'
+        return f'{Solebox.parse_pid(pid):08}'
 
 class Snipes(Demandware):
     """Class representing Snipes
@@ -97,6 +107,7 @@ class Snipes(Demandware):
             Hostname of the website
 
     Static Methods:
+        parse_pid(pid)
         image_url(pid)
         image_uri(pid)
         format_pid(pid)
@@ -112,18 +123,23 @@ class Snipes(Demandware):
     # @staticmethod
     # def host() -> str:
     #     return 'www.snipes.com'
+    
+    @staticmethod
+    def parse_pid(pid: Union[str, int]) -> int:
+        # removeprefix only works on Python 3.9+ !!!
+        return int(str(pid).removeprefix('000138'))
 
     @staticmethod
     def image_url(pid: Union[str, int]) -> str:
-        return f'https://www.snipes.com/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-snse-master-eu/default/dw538cba39/{int(pid)}_PS.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
+        return f'https://www.snipes.com/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-snse-master-eu/default/dw538cba39/{Snipes.parse_pid(pid)}_P.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
     
     @staticmethod
     def image_uri(pid: Union[str, int]) -> str:
-        return f'/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-snse-master-eu/default/dw538cba39/{int(pid)}_PS.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
+        return f'/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-snse-master-eu/default/dw538cba39/{Snipes.parse_pid(pid)}_P.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
     
     @staticmethod
     def format_pid(pid: Union[str, int]) -> str:
-        return f'0001380{int(pid):07}'
+        return f'000138{int(pid):08}'
 
 class Onygo(Demandware):
     """Class representing Onygo
@@ -138,6 +154,7 @@ class Onygo(Demandware):
             Hostname of the website
 
     Static Methods:
+        parse_pid(pid)
         image_url(pid)
         image_uri(pid)
         format_pid(pid)
@@ -155,13 +172,18 @@ class Onygo(Demandware):
     #     return 'www.onygo.com'
 
     @staticmethod
+    def parse_pid(pid: Union[str, int]) -> int:
+        # removeprefix only works on Python 3.9+ !!!
+        return int(str(pid).removeprefix('000157'))
+
+    @staticmethod
     def image_url(pid: Union[str, int]) -> str:
-        return f'https://www.onygo.com/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-ong-master-de/default/dw4cb104b1/{int(pid)}_PS.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
+        return f'https://www.onygo.com/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-ong-master-de/default/dw4cb104b1/{Onygo.parse_pid(pid)}_P.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
     
     @staticmethod
     def image_uri(pid: Union[str, int]) -> str:
-        return f'/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-ong-master-de/default/dw4cb104b1/{int(pid)}_PS.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
+        return f'/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-ong-master-de/default/dw4cb104b1/{Onygo.parse_pid(pid)}_P.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
     
     @staticmethod
     def format_pid(pid: Union[str, int]) -> str:
-        return f'0001570{int(pid):07}'
+        return f'000157{int(pid):08}'

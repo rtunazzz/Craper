@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod, abstractproperty
-from typing import Generator, Iterator, Union
+from typing import Iterator, Union
 
 class Site(ABC):
     """Abstract class representing a website
@@ -14,6 +14,7 @@ class Site(ABC):
             Hostname of the website
 
     Static Methods:
+        parse_pid(pid)
         image_url(pid)
         image_uri(pid)
         format_pid(pid)
@@ -36,7 +37,19 @@ class Site(ABC):
         """Represents a hostname"""
         raise ValueError("The host attribute is not defined on the child class.")
 
+    @staticmethod
+    @abstractmethod
+    def parse_pid(pid: Union[str, int]) -> int:
+        """Parses the (str) `pid` provided into its int representation.
 
+        Args:
+            pid (str): PID to parse
+
+        Returns:
+            int: Parsed PID
+        """
+        raise ValueError("The parse_pid method is not defined on the child class.")
+    
     @staticmethod
     @abstractmethod
     def image_url(pid: Union[str, int]) -> str:
