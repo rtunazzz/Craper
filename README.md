@@ -67,7 +67,20 @@ craper solebox -pt 1 -s 01925412
 ```
 
 #### Python script
-You may also run the scraper as a Python script. If you would rather not install the package, you can just clone this repo and run `python3 -m craper`.
+You may also run the scraper as a Python script. If you would rather not install the package, you can just clone this repo and use `python3 __main__.py` instead.
+```bash
+# Show the usage info
+python3 __main__.py -h
+
+# Start a Footpatrol scraper
+python3 __main__.py footpatrol
+
+# Start 10 Footpatrol scrapers, each scraping 100 product IDs
+python3 __main__.py footpatrol -t10 -n100
+
+# Start one scraper with proxies, starting from pid 01925412
+python3 __main__.py solebox -pt 1 -s 01925412
+```
 
 <br></br>
 
