@@ -36,10 +36,11 @@ class Scraper:
         use_proxies: bool = False,
         debug: bool = False,
         delay: int = 1,
+        db_path: str = None,
     ) -> None:
         print(c.bold + f"ℹ️  [{site_name.upper()}] Initializing a scraper" + c.reset)
-        print(c.yellow + f"ℹ️  [{site_name.upper()}] Starting from PID {start_pid} and ending {'never' if int(stop_pid) == -1 else f'at {stop_pid}'}" + c.reset)
-        print(c.yellow + f"ℹ️  [{site_name.upper()}] {'Using proxies' if use_proxies else 'Not using proxies'} on a {delay}s delay." + c.reset)
+        print(f"ℹ️  [{site_name.upper()}] Starting from PID {start_pid} and ending {'never' if int(stop_pid) == -1 else f'at {stop_pid}'}")
+        print(f"ℹ️  [{site_name.upper()}] {'Using proxies' if use_proxies else 'Not using proxies'} on a {delay}s delay.")
 
         self.running_threads: List[Thread] = []
         self.debug = debug
@@ -57,6 +58,7 @@ class Scraper:
         # Get the absotule path of the current file
         self._absolute_path = Path(__file__).parent.absolute()
         data_folder_path = f"{self._absolute_path}/data"
+        
         # create a data/ folder if it doesn't exist
         if not path.exists(data_folder_path):
             makedirs(data_folder_path)
@@ -115,8 +117,18 @@ class Scraper:
         print(f"🔗 [{self.name.upper()}] Using {len(self.proxies)} proxies.")
     
         # Initialize our database in the project's root/data folder
-        self.db = DatabaseWrapper(f"{data_folder_path}/pids.db")
-        
+        if db_path != None:
+            db_path = path.expanduser(db_path)
+            db_folder_path = '/'.join(db_path.split('/')[:-1])
+            if not path.exists(db_folder_path):
+                makedirs(db_folder_path)
+
+            print(f"🪣  [{self.name.upper()}] Using the database '{db_path}'")
+            self.db = DatabaseWrapper(db_path)
+        else: 
+            print(f"🪣  [{self.name.upper()}] Using the (default) database '{data_folder_path}/pids.db'")
+            self.db = DatabaseWrapper(f"{data_folder_path}/pids.db")
+
         # Make sure we have a table for the current site created
         self.db.create_table_safe(site_name.lower())
         
@@ -215,7 +227,7 @@ class Scraper:
 
     def send_all(self):
         if not self.send_queue.empty():
-            print(c.yellow + f'🪣  [{self.name.upper()}] Adding new products into the database' + c.reset)
+            print(f'🪣  [{self.name.upper()}] Adding new products into the database')
 
         while(not self.send_queue.empty()):
             pid = self.send_queue.get()    
@@ -289,9 +301,9 @@ class Scraper:
 
         # wait for all threads to end
         map(lambda t: t.join(), self.running_threads)
-        print(c.yellow + f'🚧 [{self.name.upper()}] All workers finished' + c.reset)
+        print(c.orange + f'🚧 [{self.name.upper()}] All workers finished' + c.reset)
 
-        print(c.yellow + f'💾 [{self.name.upper()}] Saving the rest of the PIDs, please wait' + c.reset)
+        print(f'💾 [{self.name.upper()}] Saving the rest of the PIDs, please wait')
         self.send_all()
         print('-------------------------------------------------------------')
         print(c.green + f'✅ [{self.name.upper()}] {c.bold}Scraping done!{c.reset}{c.green} Successfully checked {c.bold}{self._pids_checked}{c.reset}{c.green} pids.' + c.reset)
