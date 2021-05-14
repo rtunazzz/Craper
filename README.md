@@ -46,12 +46,12 @@ Proxy usage is not required but recommended for websites that ban often, such as
 There is two ways you can install this. Either as a global command, which will be always available from your terminal or just as a Python script.
 > Make sure to have everything [set up](###Setup) properly before installing.
 
-#### As a command
+To install, just run the following command:
 ```bash
 python3 setup.py install
 ```
 
-Then you can go ahead and start using the command:
+Then you can go ahead and start using it!
 ```bash
 # Show the usage info
 craper -h
@@ -65,9 +65,6 @@ craper footpatrol -t10 -n100
 # Start one scraper with proxies, starting from pid 01925412
 craper solebox -pt 1 -s 01925412
 ```
-
-#### Python script
-You may also run the scraper as a Python script. If you would rather not install the package, you can just clone this repo and run `python3 -m craper`.
 
 <br></br>
 
