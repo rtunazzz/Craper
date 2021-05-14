@@ -8,6 +8,7 @@ Scrapes new products, sends them through a Discord webhook and saves them into a
 
 # Supported sites
 > Support for more websites yet to come.
+
 | Website name  | Command parameter | Website URL                     |
 | ------------- | ----------------- | ------------------------------- |
 | Footpatrol    | `footpatrol`      | https://www.footpatrol.com/     |
