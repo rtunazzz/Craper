@@ -5,3 +5,4 @@ craper/data/*
 craper/config/config.json
 craper/config/proxies.txt
 craper.egg-info/*
+virtualenv/*
