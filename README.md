@@ -8,13 +8,15 @@ Scrapes new products, sends them through a Discord webhook and saves them into a
 
 # Supported sites
 > Support for more websites yet to come.
- - Footpatrol
- - Size
- - JDSports (EU)
- - TheHipStore
- - Solebox
- - Snipes
- - Onygo
+| Website name  | Command parameter | Website URL                     |
+| ------------- | ----------------- | ------------------------------- |
+| Footpatrol    | `footpatrol`      | https://www.footpatrol.com/     |
+| Size          | `size`            | https://www.size.co.uk/         |
+| JDSports (EU) | `jdsports`        | https://www.jdsports.co.uk/     |
+| TheHipStore   | `thehipstore`     | https://www.thehipstore.co.uk/  |
+| Solebox       | `solebox`         | https://solebox.com/            |
+| Snipes        | `snipes`          | https://snipes.com/             |
+| Onygo         | `onygo`           | https://onygo.com/              |
 
 <br></br>
 
