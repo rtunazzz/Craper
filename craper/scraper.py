@@ -6,7 +6,7 @@ from pathlib import Path
 from queue import Queue
 from threading import Lock, Thread, current_thread
 from time import sleep
-from typing import List, Union
+from typing import Dict, List, Union
 from json import loads
 
 from requests import head, post, exceptions
@@ -74,15 +74,19 @@ class Scraper:
         if site_name.lower() not in supported_sites:
             raise ValueError(f"Scaper for '{site_name}' is not supported.")
         
-        self.start_pid = int(start_pid)
-        self.stop_pid = int(stop_pid)
+        self.name = site_name
+        self.site = SITES[site_name.lower()]()
+
+        self.start_pid = self.site.parse_pid(start_pid)
+        self.stop_pid = self.site.parse_pid(stop_pid)
+        if self.debug: 
+            print(f"🧰 [{site_name.upper()}] Parsed '{start_pid}' into '{self.site.parse_pid(start_pid)}'")
+            print(f"🧰 [{site_name.upper()}] Parsed '{stop_pid}' into '{self.site.parse_pid(stop_pid)}'")
+
         if self.start_pid < 1:
             raise ValueError(f'The start_pid has to be greater or equal to 1.')
         elif self.stop_pid < -1:
             raise ValueError(f'The stop_pid has to be greater or equal to -1.')
-
-        self.name = site_name
-        self.site = SITES[site_name.lower()]()
 
         # Load in config
         with open(config_path) as config_f:
@@ -146,12 +150,25 @@ class Scraper:
             for pid in self._failed_pids:
                 print(f'{self.site.format_pid(pid)}')
 
-    def get_proxy(self):
+    def get_proxy(self) -> Dict:
+        """Gets a random proxy from the proxies loaded.
+
+        Returns:
+            Dict: Proxy object
+        """
         if len(self.proxies) > 1:
             return rand_choice(self.proxies)
         return {}
 
-    def check_pid(self, pid):
+    def check_pid(self, pid: int) -> bool:
+        """Checks whether or not the `pid` provided exists.
+
+        Args:
+            pid (int): PID to check
+
+        Returns:
+            bool: Whether or not the PID is loaded
+        """
         with self.curr_lock:
             # check if the pid isn't already loaded
             if pid in self.current_pids:
@@ -199,7 +216,15 @@ class Scraper:
         self._failed_pids.append(pid)
         return False
 
-    def _build_embed(self, pid: int):
+    def _build_embed(self, pid: int) -> Dict:
+        """Builds and embed for the `pid` provided.
+
+        Args:
+            pid (int): Pid to build an embed for
+
+        Returns:
+            Dict: Embed dictionary
+        """
         return {
             "description": f'```{self.site.format_pid(pid)}```',
             "color": self.embed_hex,
@@ -214,7 +239,12 @@ class Scraper:
             },
         }
 
-    def _send_pid(self, pid: int):
+    def _send_pid(self, pid: int) -> None:
+        """Sends a webhook for the `pid` passed in.
+
+        Args:
+            pid (int): PID to send.
+        """
         embed = self._build_embed(pid)
         try:
             post(self.webhook + '?wait=true',
@@ -225,7 +255,9 @@ class Scraper:
             with self.print_lock:
                 print(c.red + f'⛔️ [{self.name.upper()}] [ERROR] Failed to send {pid} ({self.site.format_pid(pid)}): {e}' + c.reset)
 
-    def send_all(self):
+    def send_all(self) -> None:
+        """Checks if there are any products to save (send) and saves them if there are any.
+        """
         if not self.send_queue.empty():
             print(f'🪣  [{self.name.upper()}] Adding new products into the database')
 
@@ -253,6 +285,12 @@ class Scraper:
                 self.check_pid(pid)
 
     def scrape(self, num_threads: int, pids_per_thread: int = 100) -> None:
+        """Starts `num_threads` workers, each scraping `pids_per_thread` provided.
+
+        Args:
+            num_threads (int): Number of threads to start
+            pids_per_thread (int, optional): Number of PIDs to scrape per thread. Defaults to 100.
+        """
         num_pids_each = pids_per_thread
 
         if self.stop_pid != -1:
@@ -306,5 +344,7 @@ class Scraper:
         print(f'💾 [{self.name.upper()}] Saving the rest of the PIDs, please wait')
         self.send_all()
         print('-------------------------------------------------------------')
+        
+        # TODO self._pids_checked not accurate due to threading overrides
         print(c.green + f'✅ [{self.name.upper()}] {c.bold}Scraping done!{c.reset}{c.green} Successfully checked {c.bold}{self._pids_checked}{c.reset}{c.green} pids.' + c.reset)
 
