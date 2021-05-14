@@ -2,6 +2,15 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "./bin"
+		},
+		{
+			"path": "./tests"
+		},
+		{
+			"path": "./craper"
 		}
 	],
 	"settings": {
