@@ -5,7 +5,6 @@
 
 Scrapes new products, sends them through a Discord webhook and saves them into a database.
 
-
 # Supported sites
 > Support for more websites yet to come.
 
@@ -22,6 +21,8 @@ Scrapes new products, sends them through a Discord webhook and saves them into a
 <br></br>
 
 ## Setup
+> Python 3.9+ is required!
+
 1. Clone this repository
 ```bash
 git clone https://github.com/rtunazzz/Craper
