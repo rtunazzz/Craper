@@ -3,7 +3,8 @@
 # Craper
 > A collection of product scrapers for various websites.
 
-Scrapes new products, sends them through a Discord webhook and saves them into a database.
+## What does this do?
+This script can scrape product images from various websites (listed below) by their product IDs. Those product IDs then can be used to get early links/ early PIDs for each website.
 
 <br></br>
 
