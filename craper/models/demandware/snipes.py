@@ -42,7 +42,7 @@ class Snipes(Demandware):
 
     @staticmethod
     def image_url(pid: Union[str, int]) -> str:
-        return f'https://www.snipes.com/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-snse-master-eu/default/dw538cba39/{Snipes.parse_pid(pid)}_P.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
+        return f'https://{Snipes.host}{Snipes.image_uri(pid)}'
     
     @staticmethod
     def image_uri(pid: Union[str, int]) -> str:

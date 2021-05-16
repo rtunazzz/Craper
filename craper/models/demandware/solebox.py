@@ -41,7 +41,7 @@ class Solebox(Demandware):
 
     @staticmethod
     def image_url(pid: Union[str, int]) -> str:
-        return f'https://www.solebox.com/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-solebox-master-de/default/dw1220ea0d/{Solebox.parse_pid(pid)}_PS.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
+        return f'https://{Solebox.host}{Solebox.image_uri(pid)}'
     
     @staticmethod
     def image_uri(pid: Union[str, int]) -> str:

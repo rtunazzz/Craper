@@ -42,7 +42,7 @@ class Onygo(Demandware):
 
     @staticmethod
     def image_url(pid: Union[str, int]) -> str:
-        return f'https://www.onygo.com/dw/image/v2/BDCB_PRD/on/demandware.static/-/Sites-ong-master-de/default/dw4cb104b1/{Onygo.parse_pid(pid)}_P.jpg?sw=3000&sh=3000&sm=fit&sfrm=png'
+        return f'https://{Onygo.host}{Onygo.image_uri(pid)}'
     
     @staticmethod
     def image_uri(pid: Union[str, int]) -> str:
