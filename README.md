@@ -50,7 +50,7 @@ Proxy usage is not required but recommended for websites that ban often, such as
 > Make sure to have everything [set up](###Setup) properly before installing.
 
 ```bash
-python3 setup.py install
+python setup.py install
 ```
 
 Then you can go ahead and start using the command:
