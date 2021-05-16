@@ -76,5 +76,9 @@ craper size -t10 -n5 -s 10
 ```
 ![Example of the running command.](https://i.imgur.com/jA374SD.png)
 
-------
-Made by [__rtuna__](https://twitter.com/rtunazzz).
+# Contributing
+If you'd like to contribute, feel free to open a pull request!
+
+## Adding sites
+Adding sites should be relatively easy. All you need to do, is add a model (ideally into a separate file) into the [models](./craper/models) directory. Afterwards, make sure to import it into the [init](./craper/models/__init__.py) file to ensure easy importing into the main `scraper.py` file. Afterwards, just update the [SITES](https://github.com/rtunazzz/Craper/blob/main/craper/scraper.py#L21) variable and that should be it!
+
