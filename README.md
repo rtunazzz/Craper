@@ -46,10 +46,8 @@ Proxy usage is not required but recommended for websites that ban often, such as
 <br></br>
 
 ## Installation
-There is two ways you can install this. Either as a global command, which will be always available from your terminal or just as a Python script.
 > Make sure to have everything [set up](###Setup) properly before installing.
 
-#### As a command
 ```bash
 python3 setup.py install
 ```
@@ -67,22 +65,6 @@ craper footpatrol -t10 -n100
 
 # Start one scraper with proxies, starting from pid 01925412
 craper solebox -pt 1 -s 01925412
-```
-
-#### Python script
-You may also run the scraper as a Python script. If you would rather not install the package, you can just clone this repo and use `python3 __main__.py` instead.
-```bash
-# Show the usage info
-python3 __main__.py -h
-
-# Start a Footpatrol scraper
-python3 __main__.py footpatrol
-
-# Start 10 Footpatrol scrapers, each scraping 100 product IDs
-python3 __main__.py footpatrol -t10 -n100
-
-# Start one scraper with proxies, starting from pid 01925412
-python3 __main__.py solebox -pt 1 -s 01925412
 ```
 
 <br></br>
