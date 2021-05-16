@@ -144,7 +144,7 @@ class Scraper:
 
         self.pid_generator = self.site.pid_stream(self.start_pid, self.stop_pid)
 
-        self._build_embed = lambda pid: self.site.build_embed(self.embed_hex, self.name, self.footer_text, pid)
+        self._build_webhook = lambda pid: self.site.build_webhook(self.embed_hex, self.name, self.footer_text, pid)
 
     def __del__(self) -> None:
         if not self.debug: return
@@ -228,11 +228,11 @@ class Scraper:
         Args:
             pid (int): PID to send.
         """
-        embed = self._build_embed(pid)
+        webhook = self._build_webhook(pid)
         try:
             post(self.webhook + '?wait=true',
                 headers = { 'Content-Type': 'application/json' },
-                json = { 'embeds': [embed] }
+                json = webhook
             )
         except Exception as e:
             with self.print_lock:
@@ -251,7 +251,6 @@ class Scraper:
             with self.db_lock:
                 print(c.yellow + f'🔌 [{self.name.upper()}] Added {pid} ({self.site.format_pid(pid)}) into the database' + c.reset)
                 self.db.add_data(self.name, int(pid), self.site.format_pid(pid), self.site.image_url(pid))
-            
 
     def _scrape(self, pids: List[int]) -> None:
         with self.print_lock:

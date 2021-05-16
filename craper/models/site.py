@@ -100,7 +100,7 @@ class Site(ABC):
         """
         raise ValueError("The pid_stream method is not defined on the child class.")
 
-    def build_embed(self, color: int, author_name: str, footer_text: str, pid: int) -> Dict:
+    def build_webhook(self, color: int, author_name: str, footer_text: str, pid: int) -> Dict:
         """Builds and embed for the with the properties provided.
 
         Args:
@@ -110,18 +110,22 @@ class Site(ABC):
             pid (int): Product ID
 
         Returns:
-            Dict: Discord embed dictionary
+            Dict: Discord webhook dictionary
         """
         return {
-            "description": f'```{self.format_pid(pid)}```',
-            "color": color,
-            "image": {
-                "url": self.image_url(pid),
-            },
-            "author": {
-                "name": author_name,
-            },
-            "footer": {
-                "text": footer_text, 
-            },
+            'embeds': [
+                {
+                    "description": f'```{self.format_pid(pid)}```',
+                    "color": color,
+                    "image": {
+                        "url": self.image_url(pid),
+                    },
+                    "author": {
+                        "name": author_name,
+                    },
+                    "footer": {
+                        "text": footer_text, 
+                    },
+                }
+            ]
         }
