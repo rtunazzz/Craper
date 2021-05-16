@@ -75,10 +75,5 @@ craper size -t10 -n5 -s 10
 ```
 ![Example of the running command.](https://i.imgur.com/jA374SD.png)
 
-## FAQ
-#### I am getting an error saying something like `file not found`/ `file doesn't exist`
-You likely either didn't clone this repository or didn't change the active directory of your terminal to this repo. Check out [this](https://projectdestroyer.com/2018/01/run-scripts-github/) article from Project Destroyer and follow the steps mentioned.
-
-
 ------
 Made by [__rtuna__](https://twitter.com/rtunazzz).
