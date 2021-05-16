@@ -1,7 +1,7 @@
 <p align="center"><img width=80% src="https://i.imgur.com/zGXvGvf.png"></p>
 
 # Craper
-> A collection of product scrapers for various websites.
+> A collection of product image scrapers for various websites.
 
 ## What does this do?
 This script can scrape product images from various websites (listed below) by their product IDs. Those product IDs then can be used to get early links/ early PIDs for each website.
