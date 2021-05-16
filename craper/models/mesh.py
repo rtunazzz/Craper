@@ -19,6 +19,9 @@ class Mesh(Site):
         format_pid(pid)
         pid_stream(start, stop)
     
+    Methods:
+        build_embed(color, author_name, footer_text, pid)
+    
     Raises:
         ValueError
             When required method(s) / attributes are not implemented
@@ -80,6 +83,9 @@ class Footpatrol(Mesh):
         format_pid(pid)
         pid_stream(start, stop)
     
+    Methods:
+        build_embed(color, author_name, footer_text, pid)
+    
     Raises:
         ValueError
             When required method(s) / attributes are not implemented
@@ -120,6 +126,9 @@ class Size(Mesh):
         format_pid(pid)
         pid_stream(start, stop)
     
+    Methods:
+        build_embed(color, author_name, footer_text, pid)
+    
     Raises:
         ValueError
             When required method(s) / attributes are not implemented
@@ -152,6 +161,9 @@ class JDSports(Mesh):
         format_pid(pid)
         pid_stream(start, stop)
     
+    Methods:
+        build_embed(color, author_name, footer_text, pid)
+    
     Raises:
         ValueError
             When required method(s) / attributes are not implemented
@@ -183,6 +195,9 @@ class TheHipStore(Mesh):
         image_uri(pid)
         format_pid(pid)
         pid_stream(start, stop)
+    
+    Methods:
+        build_embed(color, author_name, footer_text, pid)
     
     Raises:
         ValueError
