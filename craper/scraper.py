@@ -1,21 +1,21 @@
 #!/usr/local/bin/python3
 
+from json import loads
 from math import ceil
 from os import makedirs, path
 from pathlib import Path
 from queue import Queue
-from threading import Lock, Thread, current_thread
-from time import sleep
-from types import MethodType
-from typing import Dict, List, Union
-from json import loads
-
-from requests import head, post, exceptions
 from random import choice as rand_choice
+from threading import Condition, Lock, Thread, current_thread
+# TODO add a conditional variable for sending pids
+
+from time import sleep
+from typing import Dict, List, Union
+
+from requests import exceptions, head, post
 
 from craper.db.db import DatabaseWrapper
 from craper.models import *
-
 from craper.utils import load_proxies, TermColors as c
 
 SITES = {
@@ -30,6 +30,39 @@ SITES = {
 }
 
 class Scraper:
+    """Scraper class, implementing a scraper for one of the supported websites.
+
+    Supported websites:
+        Footpatrol,
+        Size,
+        JDSports,
+        TheHipStore,
+        Solebox,
+        Snipes,
+        Onygo,
+        Courir
+
+    Args:
+        site_name
+        start_pid
+        stop_pid
+        use_proxies
+        debug
+        delay
+        db_path
+
+    Methods:
+        get_proxy()
+        check_pid(pid)
+        send_all()
+        scrape(num_threads, pids_per_thread)
+    
+    Raises:
+        ValueError
+            When the scraper input is malformed in any way
+        FileNotFoundError
+            When a required file(s) is missing
+    """
     def __init__(
         self,
         site_name: str,
@@ -40,6 +73,27 @@ class Scraper:
         delay: int = 1,
         db_path: str = None,
     ) -> None:
+        """Initializes a new Scraper instance.
+
+        Args:
+            site_name (str): Name of the site we're scraping
+            start_pid (Union[int, str], optional): PID the scraper starts with. Defaults to 1.
+            stop_pid (Union[int, str], optional): PID the scraper starts with. Defaults to -1.
+            use_proxies (bool, optional): Whether or not to use proxies. Defaults to False.
+            debug (bool, optional): Prints additional messages to the console when set to True. Defaults to False.
+            delay (int, optional): Delay inbetween requests in each thread. Defaults to 1.
+            db_path (str, optional): Path to a database where to save found PIDs. Defaults to None.
+
+        Raises:
+            FileNotFoundError: When the config.json file isn't found in the config folder
+            ValueError: When a scraper for a non-supported site is initalized
+            ValueError: When the `start_pid` is lower than 1
+            ValueError: When the `stop_pid` is lower than -1
+            ValueError: When there are no webhooks set in the config.json file
+            ValueError: When a webhook isn't found for the site provided
+            ValueError: When a webhook is empty
+        """
+
         print(c.bold + f"ℹ️  [{site_name.upper()}] Initializing a scraper" + c.reset)
         print(f"ℹ️  [{site_name.upper()}] Starting from PID {start_pid} and ending {'never' if int(stop_pid) == -1 else f'at {stop_pid}'}")
         print(f"ℹ️  [{site_name.upper()}] {'Using proxies' if use_proxies else 'Not using proxies'} on a {delay}s delay.")
@@ -253,6 +307,11 @@ class Scraper:
                 self.db.add_data(self.name, int(pid), self.site.format_pid(pid), self.site.image_url(pid))
 
     def _scrape(self, pids: List[int]) -> None:
+        """Checks the PIDs passed in as an argument.
+
+        Args:
+            pids (List[int]): PIDs to check
+        """
         with self.print_lock:
             print(f'🌎 [{self.name.upper()}] [{current_thread().name}] Scraping a total of {c.bold}{len(pids)}{c.reset} pids')
         for pid in pids:
