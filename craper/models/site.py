@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod, abstractproperty
-from typing import Iterator, Union
+from typing import Dict, Iterator, Union
 
 class Site(ABC):
     """Abstract class representing a website
@@ -96,3 +96,29 @@ class Site(ABC):
             Iterator[int]: An iterator which will yiled PIDs.
         """
         raise ValueError("The pid_stream method is not defined on the child class.")
+
+    def build_embed(self, color: int, author_name: str, footer_text: str, pid: int) -> Dict:
+        """Builds and embed for the with the properties provided.
+
+        Args:
+            color (int): HEX Color
+            author_name (str): Author name
+            footer_text (str): Footer text
+            pid (int): Product ID
+
+        Returns:
+            Dict: Discord embed dictionary
+        """
+        return {
+            "description": f'```{self.format_pid(pid)}```',
+            "color": color,
+            "image": {
+                "url": self.image_url(pid),
+            },
+            "author": {
+                "name": author_name,
+            },
+            "footer": {
+                "text": footer_text, 
+            },
+        }

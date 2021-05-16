@@ -6,6 +6,7 @@ from pathlib import Path
 from queue import Queue
 from threading import Lock, Thread, current_thread
 from time import sleep
+from types import MethodType
 from typing import Dict, List, Union
 from json import loads
 
@@ -142,6 +143,8 @@ class Scraper:
 
         self.pid_generator = self.site.pid_stream(self.start_pid, self.stop_pid)
 
+        self._build_embed = lambda pid: self.site.build_embed(self.embed_hex, self.name, self.footer_text, pid)
+
     def __del__(self) -> None:
         if not self.debug: return
 
@@ -215,29 +218,6 @@ class Scraper:
         
         self._failed_pids.append(pid)
         return False
-
-    def _build_embed(self, pid: int) -> Dict:
-        """Builds and embed for the `pid` provided.
-
-        Args:
-            pid (int): Pid to build an embed for
-
-        Returns:
-            Dict: Embed dictionary
-        """
-        return {
-            "description": f'```{self.site.format_pid(pid)}```',
-            "color": self.embed_hex,
-            "image": {
-                "url": self.site.image_url(pid),
-            },
-            "author": {
-                "name": self.name,
-            },
-            "footer": {
-                "text": self.footer_text, 
-            },
-        }
 
     def _send_pid(self, pid: int) -> None:
         """Sends a webhook for the `pid` passed in.
@@ -346,5 +326,5 @@ class Scraper:
         print('-------------------------------------------------------------')
         
         # TODO self._pids_checked not accurate due to threading overrides
-        print(c.green + f'✅ [{self.name.upper()}] {c.bold}Scraping done!{c.reset}{c.green} Successfully checked {c.bold}{self._pids_checked}{c.reset}{c.green} pids.' + c.reset)
+        print(c.green + f'✅ [{self.name.upper()}] {c.bold}Scraping done!{c.reset}{c.green} Successfully checked ~{c.bold}{self._pids_checked}{c.reset}{c.green} pids.' + c.reset)
 
