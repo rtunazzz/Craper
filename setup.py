@@ -15,7 +15,7 @@ with open(path.join(HERE, 'requirements.txt'), encoding='utf-8') as f:
 
 setup(
     name="craper",
-    version="1.0.0",
+    version="1.0.1",
     description="A collection of product scrapers for various websites.",
     long_description=README,
     long_description_content_type="text/markdown",
