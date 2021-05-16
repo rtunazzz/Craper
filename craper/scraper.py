@@ -26,6 +26,7 @@ SITES = {
     'solebox': Solebox,
     'snipes': Snipes,
     'onygo': Onygo,
+    'courir': Courir,
 }
 
 class Scraper:
@@ -181,6 +182,8 @@ class Scraper:
         url = self.site.image_url(pid)
 
         try:
+            if self.debug: 
+                print(f"🧰 [{self.name.upper()}] [{current_thread().name}] Checking {url}")
             # send a head request to check if the resource exists
             r = head(url, proxies=self.get_proxy(), headers={"User-Agent": rand_choice(self.useragents)})
 
