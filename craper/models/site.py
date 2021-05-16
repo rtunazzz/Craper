@@ -19,6 +19,9 @@ class Site(ABC):
         image_uri(pid)
         format_pid(pid)
         pid_stream(start, stop)
+
+    Methods:
+        build_embed(color, author_name, footer_text, pid)
     
     Raises:
         ValueError
