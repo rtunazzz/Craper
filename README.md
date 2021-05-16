@@ -22,6 +22,7 @@ When the command is ran, it looks for new products, saves any new ones into a da
 | Solebox       | `solebox`         | https://solebox.com/            |
 | Snipes        | `snipes`          | https://snipes.com/             |
 | Onygo         | `onygo`           | https://onygo.com/              |
+| Courir        | `courir`          | https://www.courir.com/         |
 
 <br></br>
 
