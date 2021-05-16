@@ -14,6 +14,10 @@
 		}
 	],
 	"settings": {
-		"python.pythonPath": "/usr/local/bin/python3"
+		"python.pythonPath": "/usr/local/bin/python3",
+		"files.exclude": {
+			"**/__pycache__": true,
+			"craper.egg-info": true
+	}
 	}
 }
