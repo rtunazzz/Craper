@@ -1,0 +1,7 @@
+
+- [] Add condvar for sender
+- [] Swap requests with aiohttp and make stuff async
+
+** Long term **
+- [] AI that can recognize images and filter products base off their model
+
